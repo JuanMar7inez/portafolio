@@ -1,0 +1,84 @@
+---
+import BurgerMenu from '../components/icons/BurgerMenu.astro';
+---
+
+<header class="sticky top-0 z-10 flex justify-center items-center py-5 w-full xl:w-[1120px] mx-auto backdrop-blur">
+  <button
+    id="menu-button"
+    class="md:hidden absolute left-4 top-6 flex flex-col justify-center items-center w-8 h-8 gap-1.5 group"
+    aria-label="Menu Button"
+  >
+    <BurgerMenu class="size-6" />
+  </button>
+
+  <nav
+    id="mobile-menu"
+    class="hidden md:hidden fixed top-[72px] left-0 w-full bg-black/80 backdrop-blur flex flex-col items-center gap-6 py-6"
+  >
+    <a href="#top" class="nav-link px-2 py-1 text-gray-400 hover:text-white transition-colors duration-200">Inicio</a>
+    <a href="#sobre-mi" class="nav-link px-2 py-1 text-gray-400 hover:text-white transition-colors duration-200">Sobre mí</a>
+    <a href="#experiencia" class="nav-link px-2 py-1 text-gray-400 hover:text-white transition-colors duration-200">Experiencia</a>
+    <a href="#proyectos" class="nav-link px-2 py-1 text-gray-400 hover:text-white transition-colors duration-200">Proyectos</a>
+    <a href="mailto:jei.martinezm@gmail.com" class="nav-link px-2 py-1 text-gray-400 hover:text-white transition-colors duration-200">Contacto</a>
+  </nav>
+
+  <nav class="hidden md:flex flex-row gap-x-10 opacity-80">
+    <a href="#top" class="nav-link px-2 py-1 text-gray-400 hover:text-white transition-colors duration-200">Inicio</a>
+    <a href="#sobre-mi" class="nav-link px-2 py-1 text-gray-400 hover:text-white transition-colors duration-200">Sobre mí</a>
+    <a href="#experiencia" class="nav-link px-2 py-1 text-gray-400 hover:text-white transition-colors duration-200">Experiencia</a>
+    <a href="#proyectos" class="nav-link px-2 py-1 text-gray-400 hover:text-white transition-colors duration-200">Proyectos</a>
+    <a href="mailto:jei.martinezm@gmail.com" class="nav-link px-2 py-1 text-gray-400 hover:text-white transition-colors duration-200">Contacto</a>
+  </nav>
+</header>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('menu-button');
+    const menu = document.getElementById('mobile-menu');
+
+    if (!btn || !menu) return;
+
+    const navLinks = document.querySelectorAll<HTMLAnchorElement>('.nav-link');
+
+    btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+
+    const sections = Array.from(navLinks)
+      .map(link => {
+        const href = link.getAttribute('href');
+        if (!href || !href.startsWith('#')) return null; // ignorar mailto
+        return document.querySelector<HTMLElement>(href);
+      })
+      .filter(Boolean) as HTMLElement[]; // Type assertion
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          const id = `#${entry.target.id}`;
+          const link = document.querySelector<HTMLAnchorElement>(`.nav-link[href="${id}"]`);
+          if (entry.isIntersecting && link) {
+            navLinks.forEach(l => {
+              l.classList.remove('text-white');
+              l.classList.add('text-gray-400');
+            });
+            link.classList.add('text-white');
+          }
+        });
+      },
+      { rootMargin: '-50% 0px -50% 0px', threshold: 0 }
+    );
+
+    sections.forEach(section => observer.observe(section));
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.forEach(l => {
+          l.classList.remove('text-white');
+          l.classList.add('text-gray-400');
+        });
+        link.classList.add('text-white');
+        if (!menu.classList.contains('hidden')) menu.classList.add('hidden');
+      });
+    });
+  });
+</script>
+

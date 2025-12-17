@@ -1,7 +1,7 @@
 # build output
 dist/
 
-# generated types
+# generated files
 .astro/
 
 # dependencies
@@ -17,8 +17,15 @@ pnpm-debug.log*
 .env
 .env.production
 
-# macOS-specific files
+# OS-specific files
 .DS_Store
 
-# jetbrains setting folder
+# IDE settings
 .idea/
+.vscode/
+
+# Bun lockfile (si usas Bun, si no usa npm o yarn)
+bun.lockb
+
+# TypeScript v1 declaration files
+*.tsbuildinfo
